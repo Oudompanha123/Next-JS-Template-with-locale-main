@@ -1,7 +1,7 @@
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { getServerSession } from "next-auth/next";
-import { loginService } from "@/services/login/login.service";
+import { loginService } from "@/services/auth.service";
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -35,11 +35,12 @@ export const authOptions: NextAuthOptions = {
             id: userInfo.userId,
             name: userInfo.fullName,
             email: userInfo.email,
-            // Persist tokens on the user object for the JWT callback
+            // Persist tokens and role on the user object for the JWT callback
             accessToken,
             refreshToken,
             expiresIn,
-          } as unknown as import("next-auth").User;
+            role: userInfo.role,
+          };
         } catch (_) {
           return null;
         }
@@ -50,27 +51,21 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       // Initial sign in
       if (user) {
-        const u = user as unknown as {
-          accessToken?: string;
-          refreshToken?: string;
-          expiresIn?: number;
-        };
-        token.accessToken = u.accessToken;
-        token.refreshToken = u.refreshToken;
+        token.accessToken = user.accessToken;
+        token.refreshToken = user.refreshToken;
+        token.role = user.role;
         // Store absolute expiry time in epoch seconds
         // const nowSec = Math.floor(Date.now() / 1000);
-        // token.expiresAt = u.expiresIn ? nowSec + u.expiresIn : undefined;
+        // token.expiresAt = user.expiresIn ? nowSec + user.expiresIn : undefined;
       }
       return token;
     },
     async session({ session, token }) {
       if (session?.user) {
-        (session as unknown as Record<string, unknown>).accessToken =
-          token.accessToken;
-        (session as unknown as Record<string, unknown>).refreshToken =
-          token.refreshToken;
-        (session as unknown as Record<string, unknown>).expiresAt =
-          token.expiresAt;
+        session.accessToken = token.accessToken;
+        session.refreshToken = token.refreshToken;
+        session.expiresAt = token.expiresAt;
+        session.role = token.role;
       }
       return session;
     },

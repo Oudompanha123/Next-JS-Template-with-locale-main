@@ -4,7 +4,7 @@ import { routing } from "@/i18n/routing";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Kantumruy_Pro } from "next/font/google";
 import "@/styles/globals.css";
-import AppProvider from "@/libs/providers/app-provider";
+import AuthLayout from "@/components/layout/AuthLayout";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -44,9 +44,9 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${kantumruyPro.variable} antialiased`}
       >
         <NextIntlClientProvider>
-          <AppProvider>
+          <AuthLayout>
             <main>{children}</main>
-          </AppProvider>
+          </AuthLayout>
         </NextIntlClientProvider>
       </body>
     </html>

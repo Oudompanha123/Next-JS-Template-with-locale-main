@@ -1,4 +1,4 @@
-import http from "@/libs/http";
+import http from "@/utils/http";
 import { ApiResponse } from "@/types/common/api-response";
 
 const SERVICE_ID = {

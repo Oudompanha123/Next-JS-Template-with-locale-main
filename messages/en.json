@@ -1,5 +1,16 @@
 {
   "HomePage": {
     "title": "English"
+  },
+  "Login": {
+    "title": "Sign in",
+    "subtitle": "Enter your credentials to access your account",
+    "emailLabel": "Email or username",
+    "emailPlaceholder": "you@example.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "submit": "Sign in",
+    "submitting": "Signing in...",
+    "invalidCredentials": "Invalid email/username or password"
   }
 }

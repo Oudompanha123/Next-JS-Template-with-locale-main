@@ -1,3 +1,5 @@
+export type Role = "user" | "manager" | "admin";
+
 export type LoginRequest = {
     username: string;
     password: string;
@@ -12,7 +14,8 @@ export type LoginResponse = {
         userId: string;
         usernam: string;
         email: string;
-        fullName: string
+        fullName: string;
+        role: Role;
     }
 }
 

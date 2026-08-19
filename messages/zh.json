@@ -1,5 +1,16 @@
 {
   "HomePage": {
     "title": "中文"
+  },
+  "Login": {
+    "title": "登录",
+    "subtitle": "输入您的凭据以访问您的账户",
+    "emailLabel": "邮箱或用户名",
+    "emailPlaceholder": "you@example.com",
+    "passwordLabel": "密码",
+    "passwordPlaceholder": "请输入密码",
+    "submit": "登录",
+    "submitting": "登录中...",
+    "invalidCredentials": "邮箱/用户名或密码无效"
   }
 }

@@ -4,6 +4,7 @@ import { routing } from "@/i18n/routing";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "@/styles/globals.css";
+import AuthLayout from "@/components/layout/AuthLayout";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,11 +32,13 @@ export default async function LoginLayout({
   if (!hasLocale(routing.locales, locale)) notFound();
 
   return (
-    <html>
+    <html lang={locale}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <NextIntlClientProvider>{children}</NextIntlClientProvider>
+        <NextIntlClientProvider>
+          <AuthLayout>{children}</AuthLayout>
+        </NextIntlClientProvider>
       </body>
     </html>
   );
