@@ -2,6 +2,10 @@
   "HomePage": {
     "title": "English"
   },
+  "Common": {
+    "logout": "Log out",
+    "loggingOut": "Logging out..."
+  },
   "Login": {
     "title": "Sign in",
     "subtitle": "Enter your credentials to access your account",
@@ -11,6 +15,7 @@
     "passwordPlaceholder": "Enter your password",
     "submit": "Sign in",
     "submitting": "Signing in...",
+    "rememberId": "Remember my ID",
     "invalidCredentials": "Invalid user ID or password"
   }
 }

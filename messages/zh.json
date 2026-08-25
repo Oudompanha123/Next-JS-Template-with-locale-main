@@ -2,6 +2,10 @@
   "HomePage": {
     "title": "中文"
   },
+  "Common": {
+    "logout": "退出登录",
+    "loggingOut": "正在退出..."
+  },
   "Login": {
     "title": "登录",
     "subtitle": "输入您的凭据以访问您的账户",
@@ -11,6 +15,7 @@
     "passwordPlaceholder": "请输入密码",
     "submit": "登录",
     "submitting": "登录中...",
+    "rememberId": "记住我的用户ID",
     "invalidCredentials": "用户ID或密码无效"
   }
 }
