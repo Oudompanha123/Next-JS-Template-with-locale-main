@@ -1,77 +1,125 @@
-import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import type { NextAuthOptions, Session, User } from "next-auth";
 import { getServerSession } from "next-auth/next";
-import { loginService } from "@/services/auth.service";
+import type { JWT } from "next-auth/jwt";
 
-export const authOptions: NextAuthOptions = {
-  session: {
-    strategy: "jwt",
-  },
+import authService from "@/services/auth.service";
+import { AuthRequest } from "@/types/auth";
+
+export const jwt = async ({ token, user }: { token: JWT; user?: User }) => {
+  if (user) {
+    token.token = user.data.access_token;
+  }
+  return { ...token, ...user };
+};
+
+export const session = ({
+  session,
+  token,
+}: {
+  session: Session;
+  token: JWT;
+}): Promise<Session> => {
+  if (Date.now() / 1000 > token?.accessTokenExpires) {
+    return Promise.reject({
+      error: new Error(
+        "Refresh token has expired. Please log in again to get a new refresh token."
+      ),
+    });
+  }
+
+  const accessTokenData = JSON.parse(atob(token.token?.split(".")?.at(1) || "{}"));
+
+  session.user = accessTokenData;
+  token.accessTokenExpires = accessTokenData.exp;
+  session.token = token?.token;
+
+  return Promise.resolve(session);
+};
+
+export const authOption: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
-  pages: {
-    signIn: "/login",
-    error: "/login",
-  },
   providers: [
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
+        user_id: {},
+        password: {},
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          return null;
+        if (!credentials || !credentials.user_id || !credentials.password) {
+          throw new Error("User ID and Password are required.");
         }
-        try {
-          const result = await loginService.login({
-            username: credentials.email,
-            password: credentials.password,
-          });
-          const { accessToken, refreshToken, expiresIn, userInfo } =
-            result.data;
 
-          return {
-            id: userInfo.userId,
-            name: userInfo.fullName,
-            email: userInfo.email,
-            // Persist tokens and role on the user object for the JWT callback
-            accessToken,
-            refreshToken,
-            expiresIn,
-            role: userInfo.role,
-          };
-        } catch (_) {
-          return null;
+        const authRequest: AuthRequest = {
+          user_id: credentials.user_id,
+          password: credentials.password,
+        };
+
+        const response = await authService.login(authRequest).catch((err) => err);
+
+        if (response.status === 200) {
+          return response.data;
         }
+        throw new Error(response?.message || "Invalid username or password");
       },
     }),
   ],
+  session: {
+    strategy: "jwt",
+    maxAge: (2 * 60 - 2) * 60, // 2 hours
+  },
   callbacks: {
-    async jwt({ token, user }) {
-      // Initial sign in
-      if (user) {
-        token.accessToken = user.accessToken;
-        token.refreshToken = user.refreshToken;
-        token.role = user.role;
-        // Store absolute expiry time in epoch seconds
-        // const nowSec = Math.floor(Date.now() / 1000);
-        // token.expiresAt = user.expiresIn ? nowSec + user.expiresIn : undefined;
-      }
-      return token;
-    },
-    async session({ session, token }) {
-      if (session?.user) {
-        session.accessToken = token.accessToken;
-        session.refreshToken = token.refreshToken;
-        session.expiresAt = token.expiresAt;
-        session.role = token.role;
-      }
-      return session;
-    },
+    jwt,
+    session,
+  },
+  pages: {
+    signIn: "/login",
   },
 };
 
-export const getAuth = () => getServerSession(authOptions);
+export const getAuth = () => getServerSession(authOption);
 
 export type AppSession = Awaited<ReturnType<typeof getAuth>>;
+
+declare module "next-auth" {
+  /**
+   * Returned by `useSession`, `getSession` and received as
+   * a prop on the `SessionProvider` React Context
+   */
+  interface Session {
+    refreshTokenExpires?: number;
+    accessTokenExpires?: number;
+    refreshToken?: string;
+    token?: string;
+    error?: string;
+    user?: User;
+  }
+
+  interface User {
+    status: {
+      code: number;
+      message: string;
+    };
+    data: {
+      access_token: string;
+      token_type: string;
+      expires_in: number;
+    };
+    sub: string;
+    scope: string;
+  }
+}
+
+declare module "next-auth/jwt" {
+  /** Returned by the `jwt` callback and `getToken`, when using JWT sessions */
+  interface JWT {
+    refreshTokenExpires?: number;
+    accessTokenExpires: number;
+    refreshToken?: string;
+    token: string;
+    exp?: number;
+    iat?: number;
+    jti?: string;
+  }
+}

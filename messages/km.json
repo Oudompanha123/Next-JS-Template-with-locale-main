@@ -5,12 +5,12 @@
   "Login": {
     "title": "ចូលប្រើប្រាស់",
     "subtitle": "បញ្ចូលព័ត៌មានរបស់អ្នកដើម្បីចូលប្រើគណនី",
-    "emailLabel": "អ៊ីមែល ឬឈ្មោះអ្នកប្រើប្រាស់",
-    "emailPlaceholder": "you@example.com",
+    "userIdLabel": "លេខសម្គាល់អ្នកប្រើប្រាស់",
+    "userIdPlaceholder": "បញ្ចូលលេខសម្គាល់អ្នកប្រើប្រាស់",
     "passwordLabel": "ពាក្យសម្ងាត់",
     "passwordPlaceholder": "បញ្ចូលពាក្យសម្ងាត់របស់អ្នក",
     "submit": "ចូលប្រើប្រាស់",
     "submitting": "កំពុងចូល...",
-    "invalidCredentials": "អ៊ីមែល/ឈ្មោះអ្នកប្រើប្រាស់ ឬពាក្យសម្ងាត់មិនត្រឹមត្រូវ"
+    "invalidCredentials": "លេខសម្គាល់អ្នកប្រើប្រាស់ ឬពាក្យសម្ងាត់មិនត្រឹមត្រូវ"
   }
 }

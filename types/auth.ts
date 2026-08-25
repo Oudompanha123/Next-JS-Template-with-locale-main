@@ -1,22 +1,6 @@
-export type Role = "user" | "manager" | "admin";
-
-export type LoginRequest = {
-    username: string;
-    password: string;
-}
-
-export type LoginResponse = {
-    accessToken: string;
-    refreshToken: string;
-    expiresIn: number;
-    tokenType: string;
-    userInfo: {
-        userId: string;
-        usernam: string;
-        email: string;
-        fullName: string;
-        role: Role;
-    }
+export interface AuthRequest {
+  user_id: string;
+  password: string;
 }
 
 export type RegisterRequest = {

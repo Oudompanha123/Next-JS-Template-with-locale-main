@@ -1,19 +1,36 @@
 "use client";
-
-import type { PropsWithChildren } from "react";
+import { PropsWithChildren } from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Toaster } from "react-hot-toast";
 import { SessionProvider } from "next-auth/react";
 
-import QueryClientProvider from "@/lib/providers/query-client-provider";
-import { AuthContextProvider } from "@/lib/context/auth-context";
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
-export function AuthLayout({ children }: PropsWithChildren) {
+export default function AuthLayout({ children }: PropsWithChildren) {
   return (
-    <QueryClientProvider>
+    <main>
+      <Toaster
+        position="top-right"
+        reverseOrder={false}
+        containerStyle={{
+          zIndex: 99999,
+        }}
+        toastOptions={{
+          style: {
+            pointerEvents: "none",
+          },
+        }}
+      />
       <SessionProvider>
-        <AuthContextProvider>{children}</AuthContextProvider>
+        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
       </SessionProvider>
-    </QueryClientProvider>
+    </main>
   );
 }
-
-export default AuthLayout;

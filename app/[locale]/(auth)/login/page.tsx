@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 
-import { getAuth } from "@/lib/session/auth";
+import { getAuth } from "@/lib/session";
 import { LoginForm } from "@/components/ui/auth/LoginForm";
 import {
   Card,

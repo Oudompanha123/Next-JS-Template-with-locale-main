@@ -1,17 +1,9 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { create } from "zustand/react";
 
-type LoginState = {
-  rememberedUserId: string | null;
-  setRememberedUserId: (userId: string | null) => void;
-};
-
-export const useLoginStore = create<LoginState>()(
-  persist(
-    (set) => ({
-      rememberedUserId: null,
-      setRememberedUserId: (userId) => set({ rememberedUserId: userId }),
-    }),
-    { name: "login-store" }
-  )
-);
+export const useLoginStore = create<{
+  userId?: string;
+  setUserId: (userId?: string) => void;
+}>((set) => ({
+  userId: "",
+  setUserId: (userId?: string) => set((state) => ({ ...state, userId })),
+}));

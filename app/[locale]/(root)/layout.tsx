@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Kantumruy_Pro } from "next/font/google";
 import "@/styles/globals.css";
 import AuthLayout from "@/components/layout/AuthLayout";
+import { AuthProvider } from "@/lib/context/auth-context";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,7 +46,7 @@ export default async function RootLayout({
       >
         <NextIntlClientProvider>
           <AuthLayout>
-            <main>{children}</main>
+            <AuthProvider>{children}</AuthProvider>
           </AuthLayout>
         </NextIntlClientProvider>
       </body>

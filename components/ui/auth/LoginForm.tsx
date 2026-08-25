@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { useForm } from "react-hook-form";
@@ -25,29 +25,18 @@ export function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [formError, setFormError] = useState<string | null>(null);
-  const rememberedUserId = useLoginStore((state) => state.rememberedUserId);
-  const setRememberedUserId = useLoginStore((state) => state.setRememberedUserId);
+  const setUserId = useLoginStore((state) => state.setUserId);
 
   const form = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
-    defaultValues: { email: "", password: "" },
+    defaultValues: { user_id: "", password: "" },
   });
-
-  // Set after mount (not via defaultValues) so the server-rendered markup
-  // stays empty and matches the client's first render before localStorage
-  // has been read, avoiding a hydration mismatch.
-  useEffect(() => {
-    if (rememberedUserId) {
-      form.setValue("email", rememberedUserId);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rememberedUserId]);
 
   const onSubmit = async (values: LoginSchema) => {
     setFormError(null);
 
     const result = await signIn("credentials", {
-      email: values.email,
+      user_id: values.user_id,
       password: values.password,
       redirect: false,
       callbackUrl: searchParams.get("callbackUrl") ?? "/",
@@ -58,7 +47,7 @@ export function LoginForm() {
       return;
     }
 
-    setRememberedUserId(values.email);
+    setUserId(values.user_id);
     router.push(result.url ?? "/");
     router.refresh();
   };
@@ -70,15 +59,15 @@ export function LoginForm() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" noValidate>
         <FormField
           control={form.control}
-          name="email"
+          name="user_id"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t("emailLabel")}</FormLabel>
+              <FormLabel>{t("userIdLabel")}</FormLabel>
               <FormControl>
                 <Input
                   type="text"
                   autoComplete="username"
-                  placeholder={t("emailPlaceholder")}
+                  placeholder={t("userIdPlaceholder")}
                   disabled={isSubmitting}
                   {...field}
                 />
