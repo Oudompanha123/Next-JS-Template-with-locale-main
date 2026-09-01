@@ -6,6 +6,7 @@ import { Geist, Geist_Mono, Kantumruy_Pro } from "next/font/google";
 import "@/styles/globals.css";
 import AuthLayout from "@/components/layout/AuthLayout";
 import { AuthProvider } from "@/lib/context/auth-context";
+import MuiThemeProvider from "@/components/providers/MuiThemeProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -46,7 +47,9 @@ export default async function RootLayout({
       >
         <NextIntlClientProvider>
           <AuthLayout>
-            <AuthProvider>{children}</AuthProvider>
+            <AuthProvider>
+              <MuiThemeProvider>{children}</MuiThemeProvider>
+            </AuthProvider>
           </AuthLayout>
         </NextIntlClientProvider>
       </body>
