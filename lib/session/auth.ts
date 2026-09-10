@@ -56,7 +56,12 @@ export const authOption: NextAuthOptions = {
           password: credentials.password,
         };
 
+        // Password is redacted on purpose — never log plaintext credentials.
+        console.log("[auth] login request:", { user_id: authRequest.user_id, password: "***" });
+
         const response = await authService.login(authRequest).catch((err) => err);
+
+        console.log("[auth] login response:", response);
 
         if (response.status === 200) {
           return response.data;
